@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+"""Entry point installed as /usr/libexec/tfvpn-plugin.
+
+NetworkManager execs this (the ``program=`` line of
+/etc/NetworkManager/VPN/tetherfuse.name).  It must run as root; NM launches
+VPN service plugins with sufficient privileges to create TUN devices.
+"""
+import sys
+
+sys.path.insert(0, "/usr/lib/tetherfuse-nm")
+
+from tfvpn.plugin import main  # noqa: E402
+
+if __name__ == "__main__":
+    sys.exit(main())

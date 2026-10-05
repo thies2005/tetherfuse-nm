@@ -1,0 +1,4 @@
+[VPN Connection]
+name=tetherfuse
+service=org.freedesktop.NetworkManager.tetherfuse
+program=/usr/libexec/tfvpn-plugin

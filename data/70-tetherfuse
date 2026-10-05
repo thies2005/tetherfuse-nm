@@ -1,0 +1,31 @@
+#!/bin/sh
+# TetherFuse NM integration — hotspot deactivation hook.
+#
+# connection.secondaries handles automatic ACTIVATION when the hotspot
+# connects.  NetworkManager does not automatically deactivate a secondary
+# when the parent connection goes away, so this dispatcher script performs
+# the explicit teardown when the hotspot profile disconnects.  It is fast
+# (a single nmcli call) and does no long-running work, per NM dispatcher
+# requirements.
+#
+# Environment (set by NetworkManager): CONNECTION_UUID, DEVICE_IFACE, $2=action.
+set -u
+
+CONF_DIR=/etc/tetherfuse
+HOTSPOT_UUID_FILE="$CONF_DIR/hotspot-uuid"
+VPN_ID_FILE="$CONF_DIR/vpn-id"
+
+[ -r "$HOTSPOT_UUID_FILE" ] || exit 0
+HOTSPOT_UUID="$(cat "$HOTSPOT_UUID_FILE" 2>/dev/null)"
+VPN_ID="$(cat "$VPN_ID_FILE" 2>/dev/null)"
+[ -n "${VPN_ID:-}" ] || VPN_ID=TetherFuse
+
+[ -n "${CONNECTION_UUID:-}" ] && [ "$CONNECTION_UUID" = "$HOTSPOT_UUID" ] || exit 0
+
+case "$2" in
+  down|pre-down)
+    /usr/bin/logger -t tetherfuse "hotspot connection gone; deactivating VPN '$VPN_ID'"
+    /usr/bin/nmcli connection down id "$VPN_ID" >/dev/null 2>&1 || true
+    ;;
+esac
+exit 0

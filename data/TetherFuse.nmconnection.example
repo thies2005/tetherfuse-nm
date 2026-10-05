@@ -1,0 +1,43 @@
+[connection]
+id=TetherFuse
+type=vpn
+# autoconnect is not implemented for VPN connections; activation is driven by
+# connection.secondaries on the hotspot profile (set by install.sh --bind-hotspot).
+autoconnect=false
+
+[vpn]
+service-type=org.freedesktop.NetworkManager.tetherfuse
+# --- required ---
+proxy-host=192.168.49.1
+proxy-port=8228
+# --- optional (defaults shown) ---
+#tun-name=tetherfuse0
+#tun-address=198.18.0.1
+#tun-prefix=15
+#virtual-dns-ip=198.18.0.2
+#virtual-dns-pool=198.18.128.0/17  # fake-IP allocations; must avoid the two addresses above
+#mtu=1400
+#dns=virtual
+#dns-addr=            # upstream resolver for over-tcp mode
+#route-all=true
+#extra-routes=        # comma-separated IPv4 CIDRs (split tunnel)
+#bypass-cidrs=        # comma-separated IPv4 CIDRs allowed around the tunnel
+#fail-closed=false    # true = scoped nftables leak prevention while connected
+#fail-closed-allow-mdns=false
+#probe-attempts=8
+#probe-interval=2
+#max-sessions=4096    # tun2proxy concurrent TCP cap (upstream default 200 is too small)
+#ipv6-enabled=false
+# --- proxy auth (if the phone proxy ever requires it): add via
+#     nmcli connection modify TetherFuse +vpn.secrets proxy-password='…'
+#proxy-username=
+
+[ipv4]
+method=auto
+# NM installs the default route via the tunnel unless never-default is set;
+# the plugin reports never-default when vpn route-all=false.
+
+[ipv6]
+# IPv6 is disabled on the tunnel by default; enable together with
+# vpn ipv6-enabled=true only after reading docs/LIMITATIONS.md.
+method=disabled
