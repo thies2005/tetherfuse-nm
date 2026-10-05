@@ -146,3 +146,9 @@ rules. Backups of overwritten files live under `/var/backups/tetherfuse-nm/`.
   IPv6, Docker, DNS interactions
 * [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) — command cookbook
 * [docs/MIGRATION.md](docs/MIGRATION.md) — existing GNOME/env/APT proxy settings
+
+## License
+
+[MIT](LICENSE) — the bundled tun2proxy backend is licensed separately
+upstream (tun2proxy/tun2proxy on GitHub); this repository's code covers only
+the NetworkManager integration itself.
